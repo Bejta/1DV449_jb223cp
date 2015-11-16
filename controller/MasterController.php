@@ -23,9 +23,10 @@ class MasterController{
 		$cm = new \model\Crawler();
 
 		if($cv->urlPressed()){
+
+			$cm->crawl($hv->getURL());
       		$lv->render($hv,$cv,$fv);
 	    }
 	    $lv->render($hv,$cv,$fv);
       		
-
 }
