@@ -44,8 +44,57 @@ class Crawler{
 
 		return $data;
 	}
+    
+    // Get links to all pages from given URL
+    // It can be calendar URL so it gives URL to all people
+	public function getLinks($URL){
 
-	public function getAvailableDays($URL){
+		$links=array();
+        $data=curl_get_request($URL);
+        $dom = new DOMDocument();
+
+        if($dom->loadHTML($data)){
+
+        	//Writes all a-elements in array $href
+        	$href=$dom->getElementsByTagName("a");
+            
+            // Loop trought array of hrefs and writes it's href attribute in array
+            // http://php.net/manual/en/domelement.getattribute.php
+            foreach($href as $link){
+                $links[]=$link->getAttribute("href");
+
+            }
+            
+            // For some reason, this doesn't works
+        	/*for( $i=0; $i<$href->length;$i++){ 
+                $links[]=$href->item(i)->getAttribute("href");
+        	}*/
+
+        }
+		return $links;
+
+	}
+    
+    /*
+     *
+     * This function will analyze peoples available days, and return one array with available days
+     * 
+     *
+     */
+	public function getAvailableDays($links){
+		$availableDays = array();
+        
+        for ($i=0; $i<$links->length; i++){
+
+        	//TODO: Fix URL as argument
+           $availableDays[]=getPersonsAvailableDays(URL);
+
+        }
+
+        //TODO: Make $availableDays array with only days that are in every array
+
+
+		return $availableDays;
 
 	}
 
@@ -66,9 +115,9 @@ class Crawler{
 
 		$dom = new DOMDocument();
 
-		$dom->loadHTML($data);
+		//$dom->loadHTML($data);
 
-		if($dom != null){
+		if($dom->loadHTML($data)){
             
             // Table header has information about specific day
             // Table cells "td" has information about availability
@@ -83,6 +132,9 @@ class Crawler{
 					$okayDays[] = $day->item(i)->nodeValue;
 				}
 			}
+		}
+		else{
+			echo "Sorry, It's not you it's me";
 		}
 
 		return $okayDays;
