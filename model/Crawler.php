@@ -46,7 +46,34 @@ class Crawler{
                 $xpath = new DOMXPath($dom);
                 $tables = $xpath->query("//input[@type='radio']");
 
+                foreach($tables as $table){
+                    
+                    // http://stackoverflow.com/questions/4366730/check-if-string-contains-specific-words
+                	$comparison = $table->getAttribute("value");
 
+                	if( $movie['day'] === "Friday" && (strpos($comparison,'fre') !== false){
+
+                        if(){
+                        	$tables[]=$comparison;
+                        }
+                		
+
+                	}
+                	else if( $movie['day'] === "Saturday" && (strpos($comparison,'lor') !== false){
+
+                		if(){
+                        	$tables[]=$comparison;
+                        }
+
+                	}
+                	else if( $movie['day'] === "Sunday" && (strpos($comparison,'son') !== false){
+
+                		if(){
+                        	$tables[]=$comparison;
+                        }
+
+                	}
+                }
 
                 /*
                 for( $i=0; $i<$tables->length;$i++){
