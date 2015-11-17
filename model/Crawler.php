@@ -15,18 +15,44 @@ class Crawler{
           $this->dom = new DOMDocument();
 
           $start = curl_get_request($URL);
+          $result = array();
+          $movies = array();
+          $tables = array();
+
           
           if($start!=null){
 
-            $this->dom->loadHTML($start);
+            $data=$this->dom->loadHTML($start);
+            
+            $XPath = new DOMXPath($data);
 
+            $links = $XPath->query('//a');
+            
+            $linksToSubpages = Array();
+
+	        foreach ($links as $link) {
+	           array_push($linksToSubpages, $link);
+	        }
+
+
+	        $properDays=$this->getAvailableDays($URL,$linksToSubpages[0]->getAttribute("href");
+            var_dump($properDays);
+	        $movies=$this->getAvailableMovies($URL,$properDays);
+            var_dump($movies);
+	        $tables=$this->getTables($movies,$URL);
+            var_dump($tables);
+
+            $result[]= ()
+            array_push($result, array('tables'=>$tables, 'movies'=>$movies));
           }
 
 
 		}
 		else{
-			return "<p> Site is not available</p>"
+			die("Site is not available");
 		}
+
+		return $result;
 
 	}
 
@@ -35,7 +61,7 @@ class Crawler{
 	 * This function analyse movies and days and compares it with available tables at the restaurant
 	 *
 	 */
-	public function getTables($movies,$URL){
+	public function getTables($movie,$URL){
 
 		$tables=array();
 		$data=$this->curl_get_request($URL);
@@ -51,9 +77,11 @@ class Crawler{
                     // http://stackoverflow.com/questions/4366730/check-if-string-contains-specific-words
                 	$comparison = $table->getAttribute("value");
 
+                	$time=intval($movie['time']);
+
                 	if( $movie['day'] === "Friday" && (strpos($comparison,'fre') !== false){
 
-                        if(){
+                        if($time<intval(substr($comparison, 3, 2)){
                         	$tables[]=$comparison;
                         }
                 		
@@ -61,31 +89,21 @@ class Crawler{
                 	}
                 	else if( $movie['day'] === "Saturday" && (strpos($comparison,'lor') !== false){
 
-                		if(){
+                		if($time<intval(substr($comparison, 3, 2)){
                         	$tables[]=$comparison;
                         }
 
                 	}
                 	else if( $movie['day'] === "Sunday" && (strpos($comparison,'son') !== false){
 
-                		if(){
+                		if($time<intval(substr($comparison, 3, 2)){
                         	$tables[]=$comparison;
                         }
 
                 	}
                 }
-
-                /*
-                for( $i=0; $i<$tables->length;$i++){
-
-                	$daytime=$tables[i]->getAttribute("value");
-
-                }*/
-
-
-
-
-
+         }
+         return $tables;       
 	}
     
 
@@ -146,10 +164,10 @@ class Crawler{
         
         for ($i=0; $i<$links->length; i++){
            
-           $link = $url . $link[i];
+           $links = $url . $links[i];
 
            //have to check if link is ok
-           var_dump($link);
+           var_dump($links);
            $availableDays[]=getPersonsAvailableDays($link);
 
         }
