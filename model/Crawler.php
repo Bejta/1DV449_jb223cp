@@ -77,24 +77,32 @@ class Crawler{
     
     /*
      *
-     * This function will analyze peoples available days, and return one array with available days
+     * This function will analyze friends available days, and return one array with available days
      * 
      *
      */
-	public function getAvailableDays($links){
+	public function getAvailableDays($links,$url){
+
 		$availableDays = array();
         
+        
         for ($i=0; $i<$links->length; i++){
+           
+           $link = $url . $link[i];
 
-        	//TODO: Fix URL as argument
-           $availableDays[]=getPersonsAvailableDays(URL);
+           //have to check if link is ok
+           var_dump($link);
+           $availableDays[]=getPersonsAvailableDays($link);
 
         }
 
-        //TODO: Make $availableDays array with only days that are in every array
+        // Solution to intersect arrays as a members of one array
+        //http://stackoverflow.com/questions/5389437/intersect-unknown-number-of-arrays-in-php
+
+        $result = call_user_func_array('array_intersect',$availableDays);
 
 
-		return $availableDays;
+		return $result;
 
 	}
 
