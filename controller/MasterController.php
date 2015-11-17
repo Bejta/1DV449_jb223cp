@@ -3,6 +3,10 @@
 namespace controller;
 
 require_once("view/LayoutView.php");
+require_once("view/HTMLView.php");
+require_once("view/FooterView.php");
+require_once("view/CrawlerView.php");
+require_once("model/Crawler.php");
 
 class MasterController{
 
@@ -22,11 +26,12 @@ class MasterController{
 		//CREATE OBJECT OF THE MODEL
 		$cm = new \model\Crawler();
 
-		if($cv->urlPressed()){
+		if($hv->IsPosted()){
 
-			$cm->crawl($hv->getURL());
+			$cm->Scrape($hv->getURL());
       		$lv->render($hv,$cv,$fv);
 	    }
 	    $lv->render($hv,$cv,$fv);
+	}
       		
 }

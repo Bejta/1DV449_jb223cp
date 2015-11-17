@@ -5,7 +5,7 @@ namespace view;
 class HTMLView{
 
 	private static $URL = 'HTMLView::URL';
-	private static $sendURL = 'HTMLView::sendURL';
+	private static $postURL = 'HTMLView::sendURL';
 
 	public function response() {
 
@@ -22,8 +22,8 @@ class HTMLView{
 					<br /><br />
 					<div>
 					
-					<input type="text" class="input" id="' . self::$URL . '" name="' . self::$URL . '" value="' . $this->getNumberOfWins() . '" />
-                    <input type='submit' name=' . self::$postURL . ' value='Submit' /> 
+					<input type="text" class="input" id="' . self::$URL . '" name="' . self::$URL . '" value="' . '' . '" />
+                    <input type="submit" name=' . self::$postURL . ' value="submit" /> 
 					</div>
                     <br />		
 		</fieldset>		

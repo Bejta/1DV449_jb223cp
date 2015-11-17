@@ -35,14 +35,14 @@ class Crawler{
 	        }
 
 
-	        $properDays=$this->getAvailableDays($URL,$linksToSubpages[0]->getAttribute("href");
+	        $properDays=$this->getAvailableDays($URL,$linksToSubpages[0]->getAttribute("href"));
             var_dump($properDays);
 	        $movies=$this->getAvailableMovies($URL,$properDays);
             var_dump($movies);
 	        $tables=$this->getTables($movies,$URL);
             var_dump($tables);
 
-            $result[]= ()
+           
             array_push($result, array('tables'=>$tables, 'movies'=>$movies));
           }
 
@@ -79,24 +79,24 @@ class Crawler{
 
                 	$time=intval($movie['time']);
 
-                	if( $movie['day'] === "Friday" && (strpos($comparison,'fre') !== false){
+                	if( $movie['day'] === "Friday" && (strpos($comparison,'fre') !== false)){
 
-                        if($time<intval(substr($comparison, 3, 2)){
+                        if($time<intval(substr($comparison, 3, 2))){
                         	$tables[]=$comparison;
                         }
                 		
 
                 	}
-                	else if( $movie['day'] === "Saturday" && (strpos($comparison,'lor') !== false){
+                	else if( $movie['day'] === "Saturday" && (strpos($comparison,'lor') !== false)){
 
-                		if($time<intval(substr($comparison, 3, 2)){
+                		if($time<intval(substr($comparison, 3, 2))){
                         	$tables[]=$comparison;
                         }
 
                 	}
-                	else if( $movie['day'] === "Sunday" && (strpos($comparison,'son') !== false){
+                	else if( $movie['day'] === "Sunday" && (strpos($comparison,'son') !== false)){
 
-                		if($time<intval(substr($comparison, 3, 2)){
+                		if($time<intval(substr($comparison, 3, 2))){
                         	$tables[]=$comparison;
                         }
 
@@ -162,7 +162,7 @@ class Crawler{
 		$availableDays = array();
         
         
-        for ($i=0; $i<$links->length; i++){
+        for ($i=0; $i<$links->length; $i++ ){
            
            $links = $url . $links[i];
 
