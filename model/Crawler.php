@@ -105,8 +105,87 @@ class Crawler{
 		return $result;
 
 	}
+    
+    /*
+     *
+     * This function returns a times for movie that has avilable places on given day
+     *
+     */
+	public function getPossibleMovies($movieURL,$day,$movie){
+        
+        // Builds a query for a specific day and specific movie that comes in parameters
+		$query = "/check?day=0".$day."&movie=".$movie;
 
-	public function getAvailableMovies($URL){
+		// Builds the whole url
+		$moviequery=$this->curl_get_request($movieURL.$query);
+
+		$moviesResult=array();
+        $dom = new DOMDocument();
+
+        if($dom->loadHTML($moviequery)){
+
+            // Decodes json object and from the array takes only those movies that has available places (status==1)
+            // Writes the start time of the available movie, and at the end returns an array with the times of the movie
+        	foreach(json_decode($moviequery) as $movie){
+        		 if($movie->status == 1){
+        		 	array_push($moviesResult, $movie->time);
+        		 }
+        	}
+        }
+        else{
+        	die("Fel vid inläsning av HTML");
+        }
+
+        return $moviesResult;
+
+	}
+
+	public function getAvailableMovies($URL,$days){
+
+		$moviesResult = array();
+		$data= $this->curl_get_request($URL);
+        $possibleMovies = array();
+
+        $dom = new DOMDocument();
+
+        
+        for($i=0;$i<$days->length;i++){
+
+        	if($days[i]=='Friday'){
+
+        		$days[i]='Fredag';
+        	}
+        	else if($days[i]=='Saturday'){
+
+        		$days[i]='Lördag';
+        	}
+        	else if($days[i]=='Sunday'){
+
+        		$days[i]='Söndag';
+        	}
+        }
+
+        if($dom->loadHTML($data)){
+
+        	$xpath= new DOMXPath($dom);
+
+        	$movies = $xpath->query('//select[@name = "movie"]/option[@value]');
+            
+            for($i=0;$i<$days->length;i++){
+            	foreach($movies as $movie){
+            		$possibleMovies=$this->getPossibleMovies($movie->getAttribute("value"),$days[i],$movie)
+                    $moviesResult[]=array($movie->getAttribute("value"),$possibleMovies,$days[i]);
+            	}
+            }
+
+
+        }
+        else{
+        	die("Fel vid inläsning av HTML");
+        }
+
+        return $moviesResult;
+
 		
 	}
     
