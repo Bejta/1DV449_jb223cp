@@ -29,6 +29,37 @@ class Crawler{
 		}
 
 	}
+
+	/*
+	 *
+	 * This function analyse movies and days and compares it with available tables at the restaurant
+	 *
+	 */
+	public function getTables($movies,$URL){
+
+		$tables=array();
+		$data=$this->curl_get_request($URL);
+
+		$dom=new DOMDocument($data);
+
+		if ($dom->loadHTML($data)) {
+                $xpath = new DOMXPath($dom);
+                $tables = $xpath->query("//input[@type='radio']");
+
+
+
+                /*
+                for( $i=0; $i<$tables->length;$i++){
+
+                	$daytime=$tables[i]->getAttribute("value");
+
+                }*/
+
+
+
+
+
+	}
     
 
     //Curl request, example from demo video
@@ -111,10 +142,10 @@ class Crawler{
      * This function returns a times for movie that has avilable places on given day
      *
      */
-	public function getPossibleMovies($movieURL,$day,$movie){
+	/*public function getPossibleMovies($movieValue,$day,$movieURL){
         
         // Builds a query for a specific day and specific movie that comes in parameters
-		$query = "/check?day=0".$day."&movie=".$movie;
+		$query = "/check?day=0".$day."&movie=".$movieValue;
 
 		// Builds the whole url
 		$moviequery=$this->curl_get_request($movieURL.$query);
@@ -125,10 +156,12 @@ class Crawler{
         if($dom->loadHTML($moviequery)){
 
             // Decodes json object and from the array takes only those movies that has available places (status==1)
-            // Writes the start time of the available movie, and at the end returns an array with the times of the movie
+            // Writes the start time of the available movie
         	foreach(json_decode($moviequery) as $movie){
         		 if($movie->status == 1){
-        		 	array_push($moviesResult, $movie->time);
+        		 	//array_push($moviesResult, $movie->time);
+        		 	//$moviesResult[]=array($movie->getAttribute("value"),$possibleMovies,$days[i]);
+        		 	array_push($movieResult, array('time'=>$movie['time'],'title'=>$movie->nodeValue));
         		 }
         	}
         }
@@ -138,45 +171,69 @@ class Crawler{
 
         return $moviesResult;
 
-	}
+	}*/
 
 	public function getAvailableMovies($URL,$days){
 
 		$moviesResult = array();
 		$data= $this->curl_get_request($URL);
-        $possibleMovies = array();
+        //$possibleMovies = array();
 
         $dom = new DOMDocument();
-
+        /*$convertedDays=array();
         
         for($i=0;$i<$days->length;i++){
 
         	if($days[i]=='Friday'){
 
-        		$days[i]='Fredag';
+        		$convertedDays[i]='Fredag';
         	}
         	else if($days[i]=='Saturday'){
 
-        		$days[i]='Lördag';
+        		$convertedDays[i]='Lördag';
         	}
         	else if($days[i]=='Sunday'){
 
-        		$days[i]='Söndag';
+        		$convertedDays[i]='Söndag';
         	}
-        }
+        }*/
+
 
         if($dom->loadHTML($data)){
 
         	$xpath= new DOMXPath($dom);
 
         	$movies = $xpath->query('//select[@name = "movie"]/option[@value]');
-            
+        	$moviedays = $xpath->query("//select[@id='day']/option[not(@disabled)]");
+
+
+        	foreach($moviedays as $day){
+
+                  if (in_array($day->nodeValue, $days)){
+
+	                  	foreach($movies as $movie){
+
+	                  		$JSONMovies = $this->$this->curl_get_request($URL . "/check?day=" . $day->getAttribute('value') . "&movie=" . $movie->getAttribute('value'));
+
+	                  		foreach(json_decode($JSONMovies) as $JSONmovie){
+
+	                  			if($JSONmovie['status'] == 1){
+
+	                  				array_push($moviesResult, array('time'=>$JSONmovie['time'], 'day'=>$day->nodeValue, 'title'=>$movie->nodeValue));
+	                  			}
+	                  		}
+	                  	}
+                  }
+        	}
+
+        	
+            /*
             for($i=0;$i<$days->length;i++){
             	foreach($movies as $movie){
             		$possibleMovies=$this->getPossibleMovies($movie->getAttribute("value"),$days[i],$movie)
                     $moviesResult[]=array($movie->getAttribute("value"),$possibleMovies,$days[i]);
             	}
-            }
+            }*/
 
 
         }
