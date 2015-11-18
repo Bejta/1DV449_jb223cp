@@ -14,6 +14,10 @@ Till exempel, tjänster som PriceRunner tjänar inte direkt på skrapade data, m
 
 ###### Begränsningar i din lösning- vad är generellt och vad är inte generellt i din kod?
 
+- Vissa delar är hårdkodade, då när man vill kolla tillgängliga bord, så kodar jag vissa operationer genom manipulering av strängar.
+- URL måste vara angiven i specifiskt format (dock, formaten är precis den när man gör copy/paste).
+- Fel hantering är inte optimalt
+- Jag vill tro att MVC strukturen är bra, och att de flesta funktioner i model class är generella.
 
 
 ###### Vad kan robots.txt spela för roll?
