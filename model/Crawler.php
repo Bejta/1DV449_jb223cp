@@ -2,51 +2,60 @@
 
 namespace model;
 
+use DOMDocument;
+use DOMXPath;
 
 class Crawler{
 
-	 private $dom;
+	 //private $dom;
 
 
 	public function Scrape($URL){
 
 		if ($URL!=null){
 
-          $this->dom = new DOMDocument();
+          $dom = new DOMDocument();
 
-          $start = curl_get_request($URL);
+          $start = $this->curl_get_request($URL);
+          
           $result = array();
           $movies = array();
           $tables = array();
 
           
           if($start!=null){
-
-            $data=$this->dom->loadHTML($start);
             
-            $XPath = new DOMXPath($data);
-
-            $links = $XPath->query('//a');
-            
-            $linksToSubpages = Array();
-
-	        foreach ($links as $link) {
-	           array_push($linksToSubpages, $link);
-	        }
-
-
-	        $properDays=$this->getAvailableDays($URL,$linksToSubpages[0]->getAttribute("href"));
-            var_dump($properDays);
-	        $movies=$this->getAvailableMovies($URL,$properDays);
-            var_dump($movies);
-	        $tables=$this->getTables($movies,$URL);
-            var_dump($tables);
+            if ($dom->loadHTML($start)){
 
            
-            array_push($result, array('tables'=>$tables, 'movies'=>$movies));
+            
+            
+                  //$XPath = new DOMXPath($dom);
+
+                  //$links = $XPath->query('//a');
+                  //$links = $this->getLinks($URL);
+                  
+                  $links = $this->getLinks($URL.'calendar/');
+                  
+                  //$linksToSubpages = Array();
+
+      	        /*foreach ($links as $link) {
+      	           array_push($linksToSubpages, $link);
+      	        }*/
+
+
+      	        //$properDays=$this->getAvailableDays($URL,$linksToSubpages[0]->getAttribute("href"));
+                $properDays=$this->getAvailableDays($links,$URL);
+                  //var_dump($properDays);
+      	        $movies=$this->getAvailableMovies($URL,$properDays);
+                 // var_dump($movies);
+      	        $tables=$this->getTables($movies,$URL);
+                  //var_dump($tables);
+
+                 
+                  array_push($result, array('tables'=>$tables, 'movies'=>$movies));
+            }
           }
-
-
 		}
 		else{
 			die("Site is not available");
@@ -66,7 +75,7 @@ class Crawler{
 		$tables=array();
 		$data=$this->curl_get_request($URL);
 
-		$dom=new DOMDocument($data);
+		$dom = new DOMDocument($data);
 
 		if ($dom->loadHTML($data)) {
                 $xpath = new DOMXPath($dom);
@@ -117,18 +126,20 @@ class Crawler{
 
 		$data=curl_exec($ch);
 		curl_close($ch);
-
+    
 		return $data;
 	}
     
     // Get links to all pages from given URL
     // It can be calendar URL so it gives URL to all people
-	public function getLinks($URL){
-
-		$links=array();
-        $data=curl_get_request($URL);
-        $dom = new DOMDocument();
-
+	public function getLinks($calendarURL){
+        
+		    $links=array();
+       
+        $data = $this->curl_get_request($calendarURL);
+        
+        $dom = new DOMDocument($this->curl_get_request($calendarURL));
+       
         if($dom->loadHTML($data)){
 
         	//Writes all a-elements in array $href
@@ -136,17 +147,13 @@ class Crawler{
             
             // Loop trought array of hrefs and writes it's href attribute in array
             // http://php.net/manual/en/domelement.getattribute.php
+
             foreach($href as $link){
                 $links[]=$link->getAttribute("href");
 
             }
-            
-            // For some reason, this doesn't works
-        	/*for( $i=0; $i<$href->length;$i++){ 
-                $links[]=$href->item(i)->getAttribute("href");
-        	}*/
-
         }
+    
 		return $links;
 
 	}
@@ -159,24 +166,19 @@ class Crawler{
      */
 	public function getAvailableDays($links,$url){
 
-		$availableDays = array();
-        
-        
-        for ($i=0; $i<$links->length; $i++ ){
-           
-           $links = $url . $links[i];
 
-           //have to check if link is ok
-           var_dump($links);
-           $availableDays[]=getPersonsAvailableDays($link);
+        $url.='calendar/';
+		    $availableDays = array();
+        
+        for ($i=0; $i<count($links); $i++ ){
+           
+           $availableDays[$i]=$this->getPersonsAvailableDays($url . $links[$i]);
 
         }
-
+        
         // Solution to intersect arrays as a members of one array
         //http://stackoverflow.com/questions/5389437/intersect-unknown-number-of-arrays-in-php
-
         $result = call_user_func_array('array_intersect',$availableDays);
-
 
 		return $result;
 
@@ -300,8 +302,9 @@ class Crawler{
 	public function getPersonsAvailableDays($URL){
 
 		$okayDays=array();
+    //var_dump($URL);
 		$data=$this->curl_get_request($URL);
-
+    //var_dump($data);
 		$dom = new DOMDocument();
 
 		//$dom->loadHTML($data);
@@ -318,7 +321,7 @@ class Crawler{
 			for( $i=0; $i<$day->length;$i++){
 
 				if(strtoupper($ok->item($i)->nodeValue) == "OK"){
-					$okayDays[] = $day->item(i)->nodeValue;
+					$okayDays[] = $day->item($i)->nodeValue;
 				}
 			}
 		}
