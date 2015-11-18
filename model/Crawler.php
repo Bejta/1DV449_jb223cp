@@ -2,6 +2,8 @@
 
 namespace model;
 
+session_start();
+
 use DOMDocument;
 use DOMXPath;
 
@@ -33,11 +35,11 @@ class Crawler{
                 
       	        $movies=$this->getAvailableMovies($URL,$properDays);
                 
-      	        $tables=$this->getTables($movies,$URL);
-                var_dump($tables);
+      	        //$tables=$this->getTables($movies,$URL);
+                //var_dump($tables);
 
                  
-                  array_push($result, array('tables'=>$tables, 'movies'=>$movies));
+                //array_push($result, array('tables'=>$tables, 'movies'=>$movies));
             }
           }
 		}
@@ -45,7 +47,7 @@ class Crawler{
 			die("Site is not available");
 		}
 
-		return $result;
+		return $movies;
 
 	}
 
@@ -56,46 +58,57 @@ class Crawler{
 	 */
 	public function getTables($movie,$URL){
 
-		$tables=array();
-		$data=$this->curl_get_request($URL);
+    //var_dump($movie);
+    
 
-		$dom = new DOMDocument($data);
+    $URL.='dinner/';
+    
+		$result=array();
+		$data=$this->curl_get_request($URL);
+   
+
+
+		$dom = new DOMDocument();
 
 		if ($dom->loadHTML($data)) {
                 $xpath = new DOMXPath($dom);
                 $tables = $xpath->query("//input[@type='radio']");
+
+                $time=substr($movie,-12);
+                $time=intval(substr($time,0,2));
+                $day = substr($movie, -7);
 
                 foreach($tables as $table){
                     
                     // http://stackoverflow.com/questions/4366730/check-if-string-contains-specific-words
                 	$comparison = $table->getAttribute("value");
 
-                	$time=intval($movie['time']);
+                	if( $day === "Fredag" && (strpos($comparison,'fre') !== false)){
 
-                	if( $movie['day'] === "Friday" && (strpos($comparison,'fre') !== false)){
-
-                        if($time<intval(substr($comparison, 3, 2))){
-                        	$tables[]=$comparison;
+                        if( ($time+4) <=intval(substr($comparison,-2))){
+                        	$result[]=$comparison;
                         }     		
 
                 	}
-                	else if( $movie['day'] === "Saturday" && (strpos($comparison,'lor') !== false)){
+                	else if( $day === "Lördag" && (strpos($comparison,'lor') !== false)){
 
-                		if($time<intval(substr($comparison, 3, 2))){
-                        	$tables[]=$comparison;
+                		if(($time+4) <=intval(substr($comparison,-2))){
+
+                        	$result[]=$comparison;
                         }
 
                 	}
-                	else if( $movie['day'] === "Sunday" && (strpos($comparison,'son') !== false)){
+                	else if($day === "Söndag" && (strpos($comparison,'son') !== false)){
 
-                		if($time<intval(substr($comparison, 3, 2))){
-                        	$tables[]=$comparison;
+                		if(($time+4) <=intval(substr($comparison,-2))){
+                        	$result[]=$comparison;
                         }
 
                 	}
                 }
          }
-         return $tables;       
+         //array(1) { [0]=> string(7) "lor2022" } example of returned array
+         return $result;       
 	}
     
 
@@ -174,7 +187,6 @@ class Crawler{
 		$moviesResult = array();
     $URL.='cinema';
 		$data= $this->curl_get_request($URL);
-    var_dump($days);   
 
         $dom = new DOMDocument();
 

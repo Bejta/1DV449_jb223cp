@@ -40,6 +40,7 @@ class HTMLView{
 	{
 	    if($this->IsPosted()){
 
+          $_SESSION['URL'] = trim($_POST[self::$URL]);
 	      return $_POST[self::$URL];
 
 	    }

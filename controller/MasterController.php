@@ -10,6 +10,8 @@ require_once("model/Crawler.php");
 
 class MasterController{
 
+	
+
 	public function __construct()
 	{
 
@@ -28,10 +30,25 @@ class MasterController{
 
 		if($hv->IsPosted()){
 
-			$cm->Scrape($hv->getURL());
-      		$lv->render($hv,$cv,$fv);
-	    }
-	    $lv->render($hv,$cv,$fv);
-	}
+            
+            $cv->renderMovies($cm->Scrape($hv->getURL()));
       		
+	    }
+	    else if($cv->checkAvailableTable()){
+
+            if(isset($_SESSION['URL'])){
+            	$url=$_SESSION['URL']; 
+	    	    $cv->bookTable($cm->getTables($cv->getAvailableTable(),$url)); 
+	    	}     
+		}
+		else{
+
+			$cv->resetMovies();
+
+		}
+
+	    	$lv->render($hv,$cv,$fv);
+
+	    }
+	   	
 }
