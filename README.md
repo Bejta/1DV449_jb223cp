@@ -1,5 +1,7 @@
 # 1DV449_jb223cp
 
+####http://crawler.ueuo.com/
+
 ###### Finns det några etiska aspekter vid webbskrapning. Kan du hitta något rättsfall?
 
 Det beror helt på innehållet. Om information som man skrapar är känsligt på något sätt, då är självklart att etiska frågor spelar större roll. Till exempel, om man skrapar en sida med personliga uppgifter som man kombinerar med själv insamlade information. I så fall ägaren av skrapade  webbplats kanske inte vill att samlade uppgifter används på detta sätt.
