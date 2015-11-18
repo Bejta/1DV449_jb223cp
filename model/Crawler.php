@@ -26,29 +26,15 @@ class Crawler{
           if($start!=null){
             
             if ($dom->loadHTML($start)){
-
-           
-            
-            
-                  //$XPath = new DOMXPath($dom);
-
-                  //$links = $XPath->query('//a');
-                  //$links = $this->getLinks($URL);
                   
                   $links = $this->getLinks($URL.'calendar/');
                   
-                  //$linksToSubpages = Array();
-
-      	        /*foreach ($links as $link) {
-      	           array_push($linksToSubpages, $link);
-      	        }*/
-
 
       	        //$properDays=$this->getAvailableDays($URL,$linksToSubpages[0]->getAttribute("href"));
                 $properDays=$this->getAvailableDays($links,$URL);
-                  //var_dump($properDays);
+                
       	        $movies=$this->getAvailableMovies($URL,$properDays);
-                 // var_dump($movies);
+                //var_dump($movies);
       	        $tables=$this->getTables($movies,$URL);
                   //var_dump($tables);
 
@@ -166,7 +152,6 @@ class Crawler{
      */
 	public function getAvailableDays($links,$url){
 
-
         $url.='calendar/';
 		    $availableDays = array();
         
@@ -179,8 +164,11 @@ class Crawler{
         // Solution to intersect arrays as a members of one array
         //http://stackoverflow.com/questions/5389437/intersect-unknown-number-of-arrays-in-php
         $result = call_user_func_array('array_intersect',$availableDays);
-
-		return $result;
+        
+        //http://php.net/manual/en/function.array-values.php
+        $emptyRemoved = array_values($result);
+       
+		return $emptyRemoved;
 
 	}
     
@@ -223,27 +211,27 @@ class Crawler{
 	public function getAvailableMovies($URL,$days){
 
 		$moviesResult = array();
+    $URL.='cinema';
 		$data= $this->curl_get_request($URL);
-        //$possibleMovies = array();
+    var_dump($days);   
 
         $dom = new DOMDocument();
-        /*$convertedDays=array();
-        
-        for($i=0;$i<$days->length;i++){
 
-        	if($days[i]=='Friday'){
+        for($i=0; $i<count($days); $i++){
 
-        		$convertedDays[i]='Fredag';
+        	if($days[$i]=='Friday'){
+
+        		$days[$i]='Fredag';
         	}
-        	else if($days[i]=='Saturday'){
+        	else if($days[$i]=='Saturday'){
 
-        		$convertedDays[i]='Lördag';
+        		$days[$i]='Lördag';
         	}
-        	else if($days[i]=='Sunday'){
+        	else if($days[$i]=='Sunday'){
 
-        		$convertedDays[i]='Söndag';
+        		$days[$i]='Söndag';
         	}
-        }*/
+        }
 
 
         if($dom->loadHTML($data)){
@@ -252,17 +240,19 @@ class Crawler{
 
         	$movies = $xpath->query('//select[@name = "movie"]/option[@value]');
         	$moviedays = $xpath->query("//select[@id='day']/option[not(@disabled)]");
-
+          
 
         	foreach($moviedays as $day){
-
+                  
                   if (in_array($day->nodeValue, $days)){
+                      var_dump('hej');
 
 	                  	foreach($movies as $movie){
 
-	                  		$JSONMovies = $this->$this->curl_get_request($URL . "/check?day=" . $day->getAttribute('value') . "&movie=" . $movie->getAttribute('value'));
-
-	                  		foreach(json_decode($JSONMovies) as $JSONmovie){
+	                  		$JSONMovies = $this->curl_get_request($URL . "/check?day=" . $day->getAttribute('value') . "&movie=" . $movie->getAttribute('value'));
+                        
+                        $DeceodedMovies=json_decode($JSONMovies,true);
+	                  		foreach($DeceodedMovies as $JSONmovie){
 
 	                  			if($JSONmovie['status'] == 1){
 
