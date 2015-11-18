@@ -3,8 +3,10 @@
 namespace view;
 
 //MAKE SURE ERRORS ARE SHOWN... MIGHT WANT TO TURN THIS OFF ON A PUBLIC SERVER
-error_reporting(E_ALL);
-ini_set('display_errors', 'On');
+/*error_reporting(E_ALL);
+ini_set('display_errors', 'On');*/
+
+error_reporting(0);
 
 class CrawlerView {
 
@@ -44,7 +46,23 @@ class CrawlerView {
     	return (isset($_GET[self::$RestaurantURL]));
 	    
     }
-    public function bookTable(){
+    public function bookTable($tables){
+
+
+
+    	$this->message='<ul>';
+
+    	for ($i=0; $i<count($tables);$i++){
+
+    		$dinner=$tables[$i];
+    		$dinnertime=substr($dinner,-4);
+    		$dinnerstart=substr($dinnertime,0,2);
+
+    		$this->message .='<li> Det finns ledigt bord klockan ' .$dinnerstart ;
+    		
+    	}
+
+		$this->message .= '</ul>';
        
 
     }

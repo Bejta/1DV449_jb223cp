@@ -9,9 +9,7 @@ use DOMXPath;
 
 class Crawler{
 
-	 //private $dom;
-
-
+	 
 	public function Scrape($URL){
 
 		if ($URL!=null){
@@ -35,11 +33,6 @@ class Crawler{
                 
       	        $movies=$this->getAvailableMovies($URL,$properDays);
                 
-      	        //$tables=$this->getTables($movies,$URL);
-                //var_dump($tables);
-
-                 
-                //array_push($result, array('tables'=>$tables, 'movies'=>$movies));
             }
           }
 		}
@@ -86,27 +79,33 @@ class Crawler{
                 	if( $day === "Fredag" && (strpos($comparison,'fre') !== false)){
 
                         if( ($time+4) <=intval(substr($comparison,-2))){
-                        	$result[]=$comparison;
+
+                          array_push($result, $comparison);
+                        	
                         }     		
 
                 	}
                 	else if( $day === "Lördag" && (strpos($comparison,'lor') !== false)){
 
                 		if(($time+4) <=intval(substr($comparison,-2))){
-
-                        	$result[]=$comparison;
+                          
+                          array_push($result, $comparison);
+                        	
                         }
 
                 	}
                 	else if($day === "Söndag" && (strpos($comparison,'son') !== false)){
 
                 		if(($time+4) <=intval(substr($comparison,-2))){
-                        	$result[]=$comparison;
+
+                          array_push($result, $comparison);
+                        	
                         }
 
                 	}
                 }
          }
+         //var_dump($result);
          //array(1) { [0]=> string(7) "lor2022" } example of returned array
          return $result;       
 	}
