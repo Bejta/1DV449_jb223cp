@@ -8,9 +8,9 @@ Till exempel, tjänster som PriceRunner tjänar inte direkt på skrapade data, m
 
 ###### Finns det några riktlinjer för utvecklare att tänka på om man vill vara "en god skrapare" mot serverägarna?
 
-
-
-
+1. Tearms of use
+2. Identifiering
+3. Man bör tänka på optimisering på sätt att man påverkar inte skrapade webbplatsens prestanda
 
 ###### Begränsningar i din lösning- vad är generellt och vad är inte generellt i din kod?
 
