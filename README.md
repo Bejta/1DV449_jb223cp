@@ -18,10 +18,11 @@ Till exempel, tjänster som PriceRunner tjänar inte direkt på skrapade data, m
 - URL måste vara angiven i specifiskt format (dock, formaten är precis den när man gör copy/paste).
 - Fel hantering är inte optimalt
 - Jag vill tro att MVC strukturen är bra, och att de flesta funktioner i model class är generella.
-
+- Ett exempel är att det kan finnas mer än 3 personer, och jag hanterade Lower/Upper case när det behövs
 
 ###### Vad kan robots.txt spela för roll?
 
+Innehåller information om hur kan en skrapare använda sidan. Information i robots.txt är bara riktlinjer och på inget sätt förhindrar elaka användare att skrapa webbplatsen mot instruktioner. 
 
 ######## Kuriosa
 
